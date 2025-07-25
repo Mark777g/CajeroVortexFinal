@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+    <title>Recibo de Transferencia - BANCO VORTEX</title>
+    <style type="text/css">
+        body {
+            font-family: 'Arial', sans-serif;
+            background-image: url('images/fondo-signo-dolar.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            position: relative;
+        }
+
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(26, 54, 93, 0.85);
+            z-index: 0;
+        }
+
+        .recibo-container {
+            background-color: rgba(255, 255, 255, 0.92);
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 46, 109, 0.2);
+            max-width: 450px;
+            margin: 0 auto;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+            border: 1px solid #e1e5eb;
+        }
+
+        .banco-nombre {
+            color: #1a365d;
+            font-size: 26px;
+            font-weight: 600;
+            margin-bottom: 25px;
+        }
+
+        .titulo {
+            font-size: 22px;
+            color: #1a2a3a;
+            margin-bottom: 30px;
+            font-weight: 500;
+        }
+
+        .detalle-transferencia {
+            margin: 25px 0;
+            text-align: center;
+            width: 100%;
+        }
+
+        .detalle-fila {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            padding: 10px 0;
+            border-bottom: 1px solid #e1e5eb;
+        }
+
+        .detalle-fila span:first-child {
+            color: #4a5568;
+            font-weight: 600;
+        }
+
+        .detalle-fila span:last-child {
+            color: #1a2a3a;
+        }
+
+        .monto {
+            font-size: 28px;
+            font-weight: bold;
+            color: #2c5282;
+            margin: 30px 0;
+            padding: 15px;
+            border: 2px dashed #2c5282;
+            border-radius: 8px;
+            display: inline-block;
+            background-color: rgba(44, 82, 130, 0.05);
+        }
+
+        .boton-regresar {
+            background-color: #2c5282;
+            background-image: linear-gradient(to bottom, #2c5282, #1a365d);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 30px;
+            transition: all 0.2s ease;
+        }
+
+        .boton-regresar:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 46, 109, 0.3);
+        }
+    </style>
+</h:head>
+
+<h:body>
+    <div class="recibo-container">
+        <div class="banco-nombre">BANCO VORTEX</div>
+        <div class="titulo">Transferencia Exitosa</div>
+
+        <div class="monto">100.00$</div>
+
+        <div class="detalle-transferencia">
+            <div class="detalle-fila">
+                <span>Numero de transaccion:</span>
+                <span>#123456789</span>
+            </div>
+            <div class="detalle-fila">
+                <span>Fecha:</span>
+                <span>00/00/0000</span>
+            </div>
+            <div class="detalle-fila">
+                <span>Cuenta origen:</span>
+                <span>########</span>
+            </div>
+            <div class="detalle-fila">
+                <span>Cuenta destino:</span>
+                <span>########</span>
+            </div>
+        </div>
+
+        <h:form>
+            <p:commandButton value="Regresar"
+                             action="inicio.xhtml?faces-redirect=true"
+                             styleClass="boton-regresar"
+                             icon="pi pi-arrow-left"
+                             ajax="false"/>
+        </h:form>
+    </div>
+</h:body>
+</html>

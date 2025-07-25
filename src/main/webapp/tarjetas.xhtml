@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+<h:head>
+    <title>Tarjetas - BANCO VORTEX</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f6f8;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 46, 109, 0.1);
+            padding: 40px 60px;
+            margin-top: 40px;
+            width: 700px;
+        }
+        .header {
+            color: #1a2a3a;
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 26px;
+            font-weight: 600;
+        }
+        .form-group {
+            margin-bottom: 18px;
+        }
+        .ui-inputtext, .ui-inputnumber-input, .ui-calendar {
+            width: 100% !important;
+            padding: 12px !important;
+            border: 1px solid #e1e5eb !important;
+            border-radius: 6px !important;
+            font-size: 16px !important;
+            background-color: #f8f9fa !important;
+        }
+        .ui-button {
+            width: 100%;
+            padding: 14px;
+            background-color: #2c5282 !important;
+            color: white !important;
+            border: none !important;
+            border-radius: 6px !important;
+            font-size: 16px !important;
+            font-weight: 600 !important;
+            cursor: pointer !important;
+            margin-top: 10px;
+        }
+        .ui-button:hover {
+            background-color: #1a365d !important;
+        }
+        .table-title {
+            margin-top: 40px;
+            font-size: 20px;
+            color: #2c5282;
+            font-weight: 600;
+        }
+    </style>
+</h:head>
+<h:body>
+    <div class="container">
+        <div class="header">Registrar Tarjeta</div>
+        <h:form id="tarjetaForm">
+            <p:messages autoUpdate="true" showDetail="true" globalOnly="false"/>
+            <div class="form-group">
+                <p:outputLabel for="ci" value="CI:" />
+                <p:inputText id="ci" value="#{tarjetaBean.ci}" required="true" requiredMessage="CI obligatorio" styleClass="ui-inputtext"/>
+            </div>
+            <div class="form-group">
+                <p:outputLabel for="numero" value="Número de Tarjeta:" />
+                <p:inputText id="numero" value="#{tarjetaBean.numero}" required="true" requiredMessage="Número obligatorio" styleClass="ui-inputtext"/>
+            </div>
+            <div class="form-group">
+                <p:outputLabel for="tipo" value="Tipo de Tarjeta:" />
+                <p:selectOneMenu id="tipo" value="#{tarjetaBean.tipo}" required="true" requiredMessage="Tipo obligatorio" styleClass="ui-inputtext">
+                    <f:selectItem itemLabel="Seleccione..." itemValue=""/>
+                    <f:selectItem itemLabel="Débito" itemValue="DEBITO"/>
+                    <f:selectItem itemLabel="Crédito" itemValue="CREDITO"/>
+                </p:selectOneMenu>
+            </div>
+            <div class="form-group">
+                <p:outputLabel for="fechaExpiracion" value="Fecha de Expiración:" />
+                <p:datePicker id="fechaExpiracion" value="#{tarjetaBean.fechaExpiracion}" pattern="yyyy-MM-dd" required="true" requiredMessage="Fecha de expiración obligatoria" styleClass="ui-inputtext"/>
+            </div>
+            <div class="form-group">
+                <p:outputLabel for="nombreTitular" value="Nombre del Titular:" />
+                <p:inputText id="nombreTitular" value="#{tarjetaBean.nombreTitular}" required="true" requiredMessage="Nombre obligatorio" styleClass="ui-inputtext"/>
+            </div>
+            <div class="form-group">
+                <p:outputLabel for="cvc" value="CVC:" />
+                <p:inputText id="cvc" value="#{tarjetaBean.cvc}" required="true" requiredMessage="CVC obligatorio" maxlength="3" styleClass="ui-inputtext"/>
+            </div>
+            <p:commandButton value="Registrar Tarjeta" action="#{tarjetaBean.registrarTarjeta}" ajax="false" styleClass="ui-button"/>
+            <div style="height: 12px;"></div>
+            <p:button value="Regresar al Inicio" outcome="inicio.xhtml" styleClass="ui-button"/>
+        </h:form>
+
+        <div class="table-title">Historial de Tarjetas</div>
+        <p:dataTable value="#{tarjetaBean.tarjetas}" var="t" rows="10" paginator="true" paginatorPosition="bottom">
+            <p:column headerText="ID">
+                <h:outputText value="#{t.id}"/>
+            </p:column>
+            <p:column headerText="CI">
+                <h:outputText value="#{t.ci}"/>
+            </p:column>
+            <p:column headerText="Número">
+                <h:outputText value="#{t.numero}"/>
+            </p:column>
+            <p:column headerText="Tipo">
+                <h:outputText value="#{t.tipo}"/>
+            </p:column>
+            <p:column headerText="Fecha Expiración">
+                <h:outputText value="#{t.fechaExpiracion}">
+                    <f:convertDateTime pattern="yyyy-MM-dd"/>
+                </h:outputText>
+            </p:column>
+            <p:column headerText="Nombre Titular">
+                <h:outputText value="#{t.nombreTitular}"/>
+            </p:column>
+            <p:column headerText="CVC">
+                <h:outputText value="#{t.cvc}"/>
+            </p:column>
+            <p:column headerText="Estado">
+                <h:outputText value="#{t.estado}"/>
+            </p:column>
+        </p:dataTable>
+    </div>
+</h:body>
+</html>

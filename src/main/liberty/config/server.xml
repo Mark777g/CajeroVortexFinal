@@ -1,0 +1,51 @@
+<server description="defaultServer">
+    <featureManager>
+        <feature>webProfile-10.0</feature>
+    </featureManager>
+    <basicRegistry id="defaultBasicRegistry" realm="BasicRealm">
+        <user name="username" password="password" />
+    </basicRegistry>
+    <keyStore id="defaultKeyStore" password="password" />
+    <httpEndpoint id="defaultHttpEndpoint" host="*" httpPort="9080" httpsPort="9443" />
+    <webApplication location="jbrew-web.war" contextRoot="/"/>
+
+    <logging consoleFormat="SIMPLE" consoleLogLevel="INFO" />
+    <logging messageFormat="TBASIC" messageLogLevel="INFO" />
+    <!--logging traceFormat="ENHANCED" traceSpecification="*=all" /-->
+    <logging  traceSpecification="JPA=all" />
+
+    <!--
+    <jpa defaultPersistenceProvider="org.hibernate.jpa.HibernatePersistenceProvider">
+        <defaultProperties>
+            <property name="javax.persistence.lock.timeout" value="4000"/>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.MySQL9Dialect"/>
+        </defaultProperties>
+    </jpa>
+    -->
+
+    <!-- Configuración del datasource -->
+    <dataSource id="jbrewDS" jndiName="jdbc/jbrewDS">
+        <jdbcDriver id="mysql-driver" libraryRef="MySqlJDBCLib"/>
+        <properties serverName="${db.server.name}"
+                    portNumber="${db.port.number}"
+                    databaseName="jbrew"
+                    user="jbrewuser"
+                    password="jbrewUser2525"
+                    useSSL="false" serverTimezone="UTC"
+                    allowPublicKeyRetrieval="true"/>
+        <!--
+        <properties.postgresql
+                serverName="${db.server.name}"
+                portNumber="${db.port.number}"
+                databaseName="jbrew"
+                user="jbrewuser"
+                password="jbrewUser2525"
+        />
+        -->
+    </dataSource>
+
+    <!-- Referencia al driver JDBC de MySQL -->
+    <library id="MySqlJDBCLib">
+        <fileset dir="${driver.jdbc.dir}" includes="mysql-connector-j-*.jar"/>
+    </library>
+</server>

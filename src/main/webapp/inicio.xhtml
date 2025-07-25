@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+    <title>BANCO VORTEX - Inicio</title>
+    <style type="text/css">
+        body {
+            font-family: 'Arial', sans-serif;
+            background-image: url('images/fondo-signo-dolar.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            position: relative;
+        }
+
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(26, 54, 93, 0.85);
+            z-index: 0;
+        }
+
+        .dashboard-card {
+            width: 90%;
+            max-width: 800px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .ui-panel {
+            background-color: rgba(255, 255, 255, 0.92) !important;
+            border-radius: 10px !important;
+            box-shadow: 0 4px 15px rgba(0, 46, 109, 0.2) !important;
+            border: 1px solid #e1e5eb !important;
+            padding: 30px !important;
+        }
+
+        .ui-panel-titlebar {
+            background: #2c5282 !important;
+            background: linear-gradient(to bottom, #2c5282, #1a365d) !important;
+            color: white !important;
+            font-size: 24px !important;
+            font-weight: 600 !important;
+            border-radius: 10px 10px 0 0 !important;
+            border: none !important;
+            padding: 20px !important;
+            margin-bottom: 20px !important;
+        }
+
+        .ui-panel-content {
+            padding: 20px !important;
+            text-align: center;
+        }
+
+        h3 {
+            color: #1a2a3a;
+            font-size: 22px;
+            margin-bottom: 15px;
+        }
+
+        p {
+            color: #4a5568;
+            margin-bottom: 20px;
+        }
+
+        .saldo-display {
+            font-size: 28px;
+            font-weight: bold;
+            margin: 30px 0;
+            color: #2c5282;
+            padding: 20px;
+            border: 2px dashed #2c5282;
+            border-radius: 8px;
+            display: inline-block;
+            min-width: 250px;
+            background-color: rgba(44, 82, 130, 0.05);
+        }
+
+        .button-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 30px;
+            margin: 40px 0;
+        }
+
+        .button-row {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            width: 100%;
+        }
+
+        .menu-button {
+            width: 220px;
+            height: 90px;
+            font-size: 16px !important;
+            font-weight: 600 !important;
+            border-radius: 8px !important;
+            transition: all 0.2s ease !important;
+            margin: 0 !important;
+        }
+
+        .menu-button:hover {
+            transform: translateY(-3px) !important;
+            box-shadow: 0 6px 12px rgba(0, 46, 109, 0.3) !important;
+        }
+
+        .logout-button {
+            margin-top: 40px;
+            width: 220px;
+            height: 60px;
+            font-size: 16px !important;
+            font-weight: 600 !important;
+            border-radius: 8px !important;
+            transition: all 0.2s ease !important;
+        }
+
+        .logout-button:hover {
+            transform: translateY(-3px) !important;
+            box-shadow: 0 6px 12px rgba(0, 46, 109, 0.3) !important;
+        }
+
+        .ui-button {
+            background-color: #3498db !important;
+            background-image: none !important;
+            color: white !important;
+        }
+
+        .ui-button-danger {
+            background-color: #e74c3c !important;
+            background-image: none !important;
+        }
+    </style>
+</h:head>
+
+<h:body>
+    <div class="dashboard-card">
+        <p:panel header="BANCO VORTEX" style="text-align: center;">
+            <h3>Bienvenido</h3>
+            <!-- <p>Nro de cuenta: ############</p> -->
+            <h:form id="saldoForm">
+                <p:outputPanel id="saldoPanel">
+                    <div class="saldo-display">Saldo: #{inicioBean.saldo} $</div>
+                </p:outputPanel>
+                <p:poll interval="3" update="saldoPanel" />
+            </h:form>
+
+            <div class="button-container">
+                <div class="button-row">
+                    <h:form>
+                        <p:commandButton value="TRANSFERENCIAS"
+                                         action="transferencia?faces-redirect=true"
+                                         styleClass="menu-button"
+                                         icon="pi pi-exchange"
+                                         ajax="false"/>
+                    </h:form>
+                    <!-- Botón de pagar servicios eliminado -->
+                </div>
+
+                <div class="button-row">
+                    <h:form>
+                        <p:commandButton value="RETIRAR SIN TARJETA"
+                                         action="retiroSn?faces-redirect=true"
+                                         styleClass="menu-button"
+                                         icon="pi pi-credit-card"
+                                         ajax="false"/>
+                    </h:form>
+                    <h:form>
+                        <p:commandButton value="VER HISTORIAL"
+                                         action="historial?faces-redirect=true"
+                                         styleClass="menu-button"
+                                         icon="pi pi-history"
+                                         ajax="false"/>
+                    </h:form>
+                </div>
+
+                <div class="button-row">
+                    <h:form>
+                        <p:commandButton value="DEPÓSITOS"
+                                         action="depositos?faces-redirect=true"
+                                         styleClass="menu-button"
+                                         icon="pi pi-money-bill"
+                                         ajax="false"/>
+                    </h:form>
+                    <h:form>
+                        <p:commandButton value="TARJETAS"
+                                         action="tarjetas?faces-redirect=true"
+                                         styleClass="menu-button"
+                                         icon="pi pi-id-card"
+                                         ajax="false"/>
+                    </h:form>
+                </div>
+            </div>
+
+            <h:form>
+                <p:commandButton value="Cerrar Sesión"
+                                 action="login.xhtml?faces-redirect=true"
+                                 styleClass="ui-button-danger logout-button"
+                                 icon="pi pi-sign-out"
+                                 onclick="alert('Sesión cerrada con éxito');"
+                                 ajax="false"/>
+            </h:form>
+        </p:panel>
+    </div>
+</h:body>
+</html>

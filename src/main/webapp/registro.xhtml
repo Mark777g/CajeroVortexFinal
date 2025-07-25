@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+<h:head>
+    <title>Registro - BANCO VORTEX</title>
+    <style type="text/css">
+        body {
+            font-family: 'Arial', sans-serif;
+            background-image: url('images/fondo-signo-dolar.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            position: relative;
+        }
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(26, 54, 93, 0.85);
+            z-index: 0;
+        }
+        .container {
+            background-color: rgba(255, 255, 255, 0.92);
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 46, 109, 0.2);
+            padding: 30px;
+            width: 500px;
+            border: 1px solid #e1e5eb;
+            position: relative;
+            z-index: 1;
+        }
+        .header {
+            color: #1a2a3a;
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 26px;
+            font-weight: 600;
+        }
+        .ui-panel {
+            background: transparent !important;
+            border: none !important;
+            box-shadow: none !important;
+        }
+        .ui-panel-titlebar {
+            background: #2c5282 !important;
+            background: linear-gradient(to bottom, #2c5282, #1a365d) !important;
+            color: white !important;
+            font-size: 20px !important;
+            font-weight: 600 !important;
+            border-radius: 10px 10px 0 0 !important;
+            border: none !important;
+            padding: 15px !important;
+        }
+        .ui-panel-content {
+            padding: 20px 0 !important;
+        }
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .ui-outputlabel {
+            color: #1a2a3a !important;
+            font-weight: 600 !important;
+            display: block;
+            margin-bottom: 8px !important;
+        }
+        .ui-inputtext {
+            width: 100% !important;
+            padding: 12px !important;
+            border: 1px solid #e1e5eb !important;
+            border-radius: 6px !important;
+            font-size: 16px !important;
+            background-color: #f8f9fa !important;
+            transition: all 0.2s ease !important;
+        }
+        .ui-inputtext:focus {
+            outline: none !important;
+            border-color: #2c5282 !important;
+            box-shadow: 0 0 0 3px rgba(44, 82, 130, 0.1) !important;
+        }
+        .button-container {
+            margin-top: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .create-button {
+            width: 100% !important;
+            padding: 14px !important;
+            background-color: #27ae60 !important;
+            color: white !important;
+            border: none !important;
+            border-radius: 6px !important;
+            font-size: 16px !important;
+            font-weight: 600 !important;
+            cursor: pointer !important;
+            transition: all 0.2s ease !important;
+        }
+        .create-button:hover {
+            background-color: #219653 !important;
+            transform: translateY(-2px) !important;
+            box-shadow: 0 4px 8px rgba(0, 46, 109, 0.2) !important;
+        }
+        .login-link {
+            text-align: center;
+            margin-top: 20px;
+            color: #4a5568;
+        }
+        .login-link a {
+            color: #2c5282;
+            font-weight: 600;
+            text-decoration: none;
+        }
+        .login-link a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</h:head>
+
+<h:body>
+    <div class="container">
+        <p:panel header="Registro de Cuenta">
+            <h:form id="registroForm">
+                <p:messages autoUpdate="true" showDetail="true" globalOnly="false"/>
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        <p:outputLabel for="nombres" value="Nombre(s):" />
+                        <p:inputText id="nombres" value="#{registroBean.nombres}"
+                                     required="true" requiredMessage="Nombre obligatorio"
+                                     styleClass="ui-inputtext"/>
+                    </div>
+                    <div class="form-group">
+                        <p:outputLabel for="fechaNacimiento" value="Fecha de nacimiento:" />
+                        <p:datePicker id="fechaNacimiento" value="#{registroBean.fechaNacimiento}"
+                                      pattern="yyyy-MM-dd" required="true"
+                                      requiredMessage="Fecha de nacimiento obligatoria"
+                                      styleClass="ui-inputtext"/>
+                    </div>
+                    <div class="form-group">
+                        <p:outputLabel for="genero" value="Género:" />
+                        <p:selectOneMenu id="genero" value="#{registroBean.genero}" required="true" requiredMessage="Seleccione un género" styleClass="ui-inputtext">
+                            <f:selectItem itemLabel="Seleccione..." itemValue=""/>
+                            <f:selectItem itemLabel="Masculino" itemValue="Masculino"/>
+                            <f:selectItem itemLabel="Femenino" itemValue="Femenino"/>
+                            <f:selectItem itemLabel="Otro" itemValue="Otro"/>
+                        </p:selectOneMenu>
+                    </div>
+                    <div class="form-group">
+                        <p:outputLabel for="ci" value="C.I.:" />
+                        <p:inputText id="ci" value="#{registroBean.ci}"
+                                     required="true" requiredMessage="CI obligatorio"
+                                     styleClass="ui-inputtext">
+                            <f:validateRegex pattern="\d+" message="El CI debe contener solo números"/>
+                        </p:inputText>
+                    </div>
+                    <div class="form-group">
+                        <p:outputLabel for="email" value="Correo electrónico:" />
+                        <p:inputText id="email" value="#{registroBean.email}"
+                                     required="true" requiredMessage="Correo obligatorio"
+                                     styleClass="ui-inputtext">
+                            <f:validateRegex pattern="^[^@\s]+@[^@\s]+\.[^@\s]+$" message="Correo no válido"/>
+                        </p:inputText>
+                    </div>
+                    <div class="form-group">
+                        <p:outputLabel for="password" value="Contraseña:" />
+                        <p:password id="password" value="#{registroBean.password}"
+                                    toggleMask="true" required="true"
+                                    requiredMessage="Contraseña obligatoria"
+                                    styleClass="ui-inputtext">
+                            <f:validateLength minimum="6" message="Mínimo 6 caracteres"/>
+                        </p:password>
+                    </div>
+                    <div class="terms-checkbox">
+                        <p:selectBooleanCheckbox id="terminos"
+                                                 value="#{registroBean.terminosAceptados}"
+                                                 required="true"
+                                                 requiredMessage="Debe aceptar los términos"/>
+                        <p:outputLabel for="terminos" value=" Acepto los términos y condiciones" style="margin-left: 10px;"/>
+                    </div>
+                </div>
+
+                <div class="button-container">
+                    <p:commandButton value="CREAR CUENTA"
+                                     styleClass="create-button"
+                                     action="#{registroBean.registrar}"
+                                     ajax="false"/>
+                </div>
+
+                <div class="login-link">
+                    ¿Ya tienes una cuenta? <h:link outcome="login" value="Inicia sesión aquí" />
+                </div>
+            </h:form>
+        </p:panel>
+    </div>
+</h:body>
+</html>

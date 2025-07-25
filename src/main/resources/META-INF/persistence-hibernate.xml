@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<persistence xmlns="https://jakarta.ee/xml/ns/persistence"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="https://jakarta.ee/xml/ns/persistence https://jakarta.ee/xml/ns/persistence/persistence_3_1.xsd"
+             version="3.0">
+    <persistence-unit name="jbrewPU" transaction-type="JTA">
+        <jta-data-source>jdbc/jbrewDS</jta-data-source>
+        <properties>
+            <!-- CONFIGURACION DE CONEXION A LA BD -->
+            <!--
+            <property name="jakarta.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/jbrew"/>
+            <property name="jakarta.persistence.jdbc.user" value="jbrewuser"/>
+            <property name="jakarta.persistence.jdbc.password" value="jbrewUser2525"/>
+            -->
+            <!-- Generación del esquema de base de datos (puede ser none, create, drop-and-create, drop) -->
+            <!--
+            <property name="jakarta.persistence.schema-generation.database.action"
+                      value="drop-and-create"/>
+             -->
+            <!-- Cargar script de inicialización de la BD -->
+            <property name="jakarta.persistence.sql-load-script-source" value="META-INF/initial-data.sql" />
+
+            <!-- Configuración específica de Hibernate -->
+            <property name="hibernate.dialect" value="org.hibernate.dialect.MySQL9Dialect"/>
+            <property name="hibernate.hbm2ddl.auto" value="update"/>
+
+            <!-- Logging SQL -->
+            <property name="hibernate.show_sql" value="true"/>
+            <property name="hibernate.format_sql" value="true"/>
+
+            <!-- Configuración de caché (opcional) -->
+            <property name="hibernate.cache.use_second_level_cache" value="false"/>
+            <property name="hibernate.cache.use_query_cache" value="false"/>
+        </properties>
+    </persistence-unit>
+</persistence>

@@ -1,0 +1,254 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+<h:head>
+    <title>Retiro con Tarjeta - VORTEX</title>
+    <style type="text/css">
+        body {
+            font-family: 'Arial', sans-serif;
+            background-image: url('images/fondo-signo-dolar.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            position: relative;
+        }
+
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(26, 54, 93, 0.85);
+            z-index: 0;
+        }
+
+        .container {
+            background-color: rgba(255, 255, 255, 0.92);
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 46, 109, 0.2);
+            padding: 30px;
+            width: 500px;
+            border: 1px solid #e1e5eb;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header {
+            color: #1a2a3a;
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 26px;
+            font-weight: 600;
+        }
+
+        h2 {
+            color: #1a2a3a;
+            text-align: center;
+            margin-bottom: 30px;
+            font-weight: 500;
+        }
+
+        .card-image {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .card-image img {
+            max-width: 200px;
+            height: auto;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #e1e5eb;
+            border-radius: 6px;
+            font-size: 16px;
+            background-color: #f8f9fa;
+            transition: all 0.2s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #2c5282;
+            box-shadow: 0 0 0 3px rgba(44, 82, 130, 0.1);
+        }
+
+        .card-row {
+            display: flex;
+            gap: 15px;
+        }
+
+        .card-row .form-group {
+            flex: 1;
+        }
+
+        .submit-button {
+            width: 100%;
+            padding: 14px;
+            background-color: #2c5282;
+            background-image: linear-gradient(to bottom, #2c5282, #1a365d);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: all 0.2s ease;
+        }
+
+        .submit-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 46, 109, 0.3);
+        }
+
+        .back-button {
+            width: 100%;
+            padding: 12px;
+            background-color: #4a5568;
+            background-image: linear-gradient(to bottom, #4a5568, #2d3748);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: all 0.2s ease;
+            text-align: center;
+        }
+
+        .back-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 46, 109, 0.2);
+        }
+
+
+        .ui-selectonemenu {
+            width: 100% !important;
+            padding: 12px !important;
+            border: 1px solid #e1e5eb !important;
+            border-radius: 6px !important;
+            background-color: #f8f9fa !important;
+        }
+
+        .ui-selectonemenu .ui-selectonemenu-trigger {
+            background-color: #e1e5eb !important;
+            border-left: 1px solid #e1e5eb !important;
+        }
+    </style>
+</h:head>
+
+<h:body>
+    <div class="container">
+        <div class="header">BANCO VORTEX</div>
+        <h2>Retiro con tarjeta</h2>
+
+        <div class="card-image">
+            <p:graphicImage name="images/tarjeta-banco.png" width="200"/>
+        </div>
+
+        <h:form id="formRetiro">
+            <!-- Mensajes de error globales -->
+            <p:messages id="messages" autoUpdate="true" closable="true"
+                        showDetail="true" showSummary="false"/>
+
+            <!-- Número de tarjeta -->
+            <div class="form-group">
+                <label class="form-label">Número de tarjeta</label>
+                <p:inputText id="numeroTarjeta" styleClass="form-input"
+                             placeholder="0000 0000 0000 0000"
+                             value="#{retiroTarjetaBean.numeroTarjeta}"
+                             maxlength="19">
+                    <p:ajax event="keyup" update="numeroTarjetaMsg"/>
+                </p:inputText>
+                <p:message for="numeroTarjeta" id="numeroTarjetaMsg"/>
+            </div>
+
+            <!-- Fila para CVC y Fecha Expiración -->
+            <div class="card-row">
+                <!-- CVC -->
+                <div class="form-group">
+                    <label class="form-label">CVC</label>
+                    <p:password id="cvc" styleClass="form-input"
+                                placeholder="000" maxlength="3"
+                                value="#{retiroTarjetaBean.cvc}"
+                                feedback="false">
+                        <p:ajax event="keyup" update="cvcMsg"/>
+                    </p:password>
+                    <p:message for="cvc" id="cvcMsg"/>
+                </div>
+
+                <!-- Fecha de expiración -->
+                <div class="form-group">
+                    <p:outputLabel for="fechaExpiracion" value="Fecha de expiración (yyyy-MM-dd):" />
+                    <p:inputText id="fechaExpiracion" value="#{retiroTarjetaBean.fechaExpiracion}"
+                                 required="true" requiredMessage="Fecha de expiración obligatoria"
+                                 styleClass="ui-inputtext" placeholder="2030-07-24"/>
+                    <p:message for="fechaExpiracion" id="fechaExpiracionMsg"/>
+                </div>
+            </div>
+
+            <!-- Nombre del titular -->
+            <div class="form-group">
+                <label class="form-label">Nombre del titular</label>
+                <p:inputText id="nombreTitular" styleClass="form-input"
+                             value="#{retiroTarjetaBean.nombreTitular}">
+                    <p:ajax event="keyup" update="nombreTitularMsg"/>
+                </p:inputText>
+                <p:message for="nombreTitular" id="nombreTitularMsg"/>
+            </div>
+
+            <!-- Tipo de tarjeta -->
+            <div class="form-group">
+                <label class="form-label">Tipo de tarjeta</label>
+                <p:selectOneMenu id="tipoTarjeta" styleClass="form-input"
+                                 value="#{retiroTarjetaBean.tipoTarjeta}">
+                    <f:selectItem itemLabel="Seleccione tipo" itemValue=""/>
+                    <f:selectItem itemLabel="Crédito" itemValue="credito"/>
+                    <f:selectItem itemLabel="Débito" itemValue="debito"/>
+                    <p:ajax event="change" update="tipoTarjetaMsg"/>
+                </p:selectOneMenu>
+                <p:message for="tipoTarjeta" id="tipoTarjetaMsg"/>
+            </div>
+
+            <!-- Botones -->
+            <p:commandButton value="Validar"
+                             action="#{retiroTarjetaBean.validarTarjeta}"
+                             styleClass="submit-button"
+                             icon="pi pi-check"
+                             update="@form"/>
+
+            <p:button value="Regresar"
+                      href="index.html"
+                      styleClass="back-button"
+                      icon="pi pi-arrow-left"/>
+        </h:form>
+    </div>
+</h:body>
+</html>
