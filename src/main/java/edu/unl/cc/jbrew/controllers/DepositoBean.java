@@ -13,94 +13,92 @@ import java.util.List;
 import edu.unl.cc.jbrew.controllers.AuthenticationBean;
 
 /**
- * Managed Bean para gestionar operaciones relacionadas con depósitos.
- * Controlador entre la vista y el servicio de depósitos.
- * 
- * <p>Alcance: RequestScoped (nueva instancia por cada petición HTTP)</p>
- * 
- * @see DepositoService
- * @see InicioBean
- * @see AuthenticationBean
+ * Managed Bean para manejar operaciones relacionadas con depósitos.
+ * <p>
+ * Permite registrar depósitos asociados a un usuario y listar los depósitos realizados
+ * por el usuario actualmente autenticado.
+ * </p>
  */
 @Named
 @RequestScoped
 public class DepositoBean implements Serializable {
-    private static final long serialVersionUID = 1L;
-
-    // Campos del formulario
-    private String ci;               // Cédula de identidad asociada al depósito
-    private BigDecimal monto;        // Cantidad monetaria del depósito
-    private String descripcion;      // Descripción/observación del depósito
-
-    // Dependencias inyectadas
-    @Inject
-    private DepositoService depositoService;  // Servicio para operaciones con depósitos
-    
-    @Inject
-    private InicioBean inicioBean;            // Bean para actualizar información de inicio
-    
-    @Inject
-    private AuthenticationBean authenticationBean; // Bean de autenticación para obtener usuario actual
 
     /**
-     * Registra un nuevo depósito en el sistema.
+     * Número de cédula del usuario que realiza el depósito.
+     */
+    private String ci;
+
+    /**
+     * Monto del depósito.
+     */
+    private BigDecimal monto;
+
+    /**
+     * Descripción opcional del depósito.
+     */
+    private String descripcion;
+
+    /**
+     * Servicio para operaciones con depósitos.
+     */
+    @Inject
+    private DepositoService depositoService;
+
+    /**
+     * Bean para operaciones de inicio, como actualizar saldos.
+     */
+    @Inject
+    private InicioBean inicioBean;
+
+    /**
+     * Bean de autenticación para obtener el usuario actual.
+     */
+    @Inject
+    private AuthenticationBean authenticationBean;
+
+    /**
+     * Registra un nuevo depósito utilizando los datos proporcionados en el formulario.
+     * Actualiza el estado del depósito a "ACTIVO" y suma el monto al saldo general.
      * 
-     * @return String navegación (siempre null para permanecer en la misma vista)
+     * @return null para permanecer en la misma página, muestra mensajes informativos o de error.
      */
     public String registrarDeposito() {
         FacesContext context = FacesContext.getCurrentInstance();
         try {
-            // 1. Crear entidad Deposito
             Deposito d = new Deposito();
             d.setCi(ci);
             d.setMonto(monto);
             d.setDescripcion(descripcion);
-            
-            // 2. Persistir el depósito
             depositoService.registrarDeposito(d);
-            
-            // 3. Actualizar estado a ACTIVO
+            // Actualizar el estado a ACTIVO
             depositoService.actualizarEstadoADepositoActivo(d.getId());
-            
-            // 4. Actualizar total en InicioBean
             inicioBean.sumarDeposito(monto);
-            
-            // 5. Mostrar mensaje de éxito
-            context.addMessage(null, 
-                new FacesMessage(FacesMessage.SEVERITY_INFO, "Éxito", 
-                "Depósito registrado correctamente."));
-            
-            // 6. Limpiar formulario
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Éxito", "Depósito registrado correctamente."));
             limpiarFormulario();
-            
             return null;
         } catch (Exception e) {
-            // Manejo de errores
-            context.addMessage(null, 
-                new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", 
-                "No se pudo registrar el depósito: " + e.getMessage()));
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "No se pudo registrar el depósito: " + e.getMessage()));
             return null;
         }
     }
 
     /**
-     * Obtiene la lista de depósitos del usuario autenticado.
+     * Obtiene la lista de depósitos asociados al usuario actualmente autenticado.
      * 
-     * @return List<Deposito> lista filtrada de depósitos o lista vacía si no hay usuario
+     * @return lista de depósitos del usuario; lista vacía si no hay usuario autenticado.
      */
     public List<Deposito> getDepositos() {
         String ci = authenticationBean.getUsername();
         if (ci == null) {
             return java.util.Collections.emptyList();
         }
-        
         return depositoService.listarDepositos().stream()
             .filter(d -> ci.equals(d.getCi()))
             .collect(java.util.stream.Collectors.toList());
     }
 
     /**
-     * Limpia los campos del formulario.
+     * Limpia los campos del formulario después de un registro exitoso.
      */
     private void limpiarFormulario() {
         ci = null;
@@ -108,35 +106,28 @@ public class DepositoBean implements Serializable {
         descripcion = null;
     }
 
-    // ============== GETTERS Y SETTERS ============== //
-    
-    /**
-     * @return String cédula de identidad asociada
-     */
-    public String getCi() { return ci; }
-    
-    /**
-     * @param ci String cédula de identidad a establecer
-     */
-    public void setCi(String ci) { this.ci = ci; }
-    
-    /**
-     * @return BigDecimal monto del depósito
-     */
-    public BigDecimal getMonto() { return monto; }
-    
-    /**
-     * @param monto BigDecimal cantidad a establecer
-     */
-    public void setMonto(BigDecimal monto) { this.monto = monto; }
-    
-    /**
-     * @return String descripción del depósito
-     */
-    public String getDescripcion() { return descripcion; }
-    
-    /**
-     * @param descripcion String descripción a establecer
-     */
-    public void setDescripcion(String descripcion) { this.descripcion = descripcion; }
+    // Getters y Setters
+    public String getCi() {
+        return ci;
+    }
+
+    public void setCi(String ci) {
+        this.ci = ci;
+    }
+
+    public BigDecimal getMonto() {
+        return monto;
+    }
+
+    public void setMonto(BigDecimal monto) {
+        this.monto = monto;
+    }
+
+    public String getDescripcion() {
+        return descripcion;
+    }
+
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
+    }
 }
