@@ -14,92 +14,86 @@ import java.util.UUID;
 import edu.unl.cc.jbrew.controllers.AuthenticationBean;
 
 /**
- * Managed Bean para gestionar operaciones de retiro sin tarjeta.
- * 
- * <p><strong>Responsabilidades:</strong></p>
- * <ul>
- *   <li>Registro de nuevos retiros sin tarjeta</li>
- *   <li>Generación de códigos de retiro únicos</li>
- *   <li>Validación de saldo disponible</li>
- *   <li>Consulta de historial de retiros</li>
- * </ul>
- * 
- * <p><strong>Alcance:</strong> RequestScoped (nueva instancia por cada petición HTTP)</p>
+ * Managed Bean para manejar operaciones relacionadas con retiros sin tarjeta.
+ * <p>
+ * Permite registrar retiros, validando saldo suficiente y generando un código de retiro único si no se proporciona.
+ * También permite listar los retiros realizados por el usuario autenticado.
+ * </p>
  */
 @Named
 @RequestScoped
 public class RetiroSinTarjetaBean implements Serializable {
-    private static final long serialVersionUID = 1L;
-
-    // Campos del formulario
-    private String ci;                  // Cédula de identidad del usuario
-    private BigDecimal monto;           // Monto a retirar
-    private String codigoRetiro;        // Código de retiro (opcional)
-
-    // Dependencias inyectadas
-    @Inject
-    private RetiroSinTarjetaService retiroService;  // Servicio para operaciones de retiro
-    
-    @Inject
-    private InicioBean inicioBean;                  // Bean para verificar/actualizar saldo
-    
-    @Inject
-    private AuthenticationBean authenticationBean;  // Bean de autenticación
 
     /**
-     * Registra un nuevo retiro sin tarjeta.
+     * Número de cédula del usuario que realiza el retiro.
+     */
+    private String ci;
+
+    /**
+     * Monto a retirar.
+     */
+    private BigDecimal monto;
+
+    /**
+     * Código único asociado al retiro.
+     */
+    private String codigoRetiro;
+
+    /**
+     * Servicio para operaciones de retiro sin tarjeta.
+     */
+    @Inject
+    private RetiroSinTarjetaService retiroService;
+
+    /**
+     * Bean para operaciones de inicio, como actualización de saldo.
+     */
+    @Inject
+    private InicioBean inicioBean;
+
+    /**
+     * Bean de autenticación para obtener el usuario actual.
+     */
+    @Inject
+    private AuthenticationBean authenticationBean;
+
+    /**
+     * Registra un retiro sin tarjeta verificando que el saldo sea suficiente.
+     * Si no se proporciona un código de retiro, se genera uno único automáticamente.
      * 
-     * @return String navegación (siempre null para permanecer en la misma vista)
-     * @throws IllegalStateException si ocurre un error durante el registro
+     * @return null para permanecer en la misma página, muestra mensajes de éxito o error.
      */
     public String registrarRetiro() {
         FacesContext context = FacesContext.getCurrentInstance();
         try {
-            // 1. Verificar saldo suficiente
+            // Validar que haya saldo suficiente para el retiro
             if (!inicioBean.restarRetiro(monto)) {
-                context.addMessage(null, 
-                    new FacesMessage(FacesMessage.SEVERITY_ERROR, 
-                    "Error", "Saldo insuficiente para el retiro."));
+                context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Saldo insuficiente para el retiro."));
                 return null;
             }
-
-            // 2. Crear entidad RetiroSinTarjeta
             RetiroSinTarjeta r = new RetiroSinTarjeta();
             r.setCi(ci);
             r.setMonto(monto);
-            
-            // 3. Generar código único si no se proporcionó uno
+            // Generar código único si no fue proporcionado
             if (codigoRetiro == null || codigoRetiro.trim().isEmpty()) {
                 r.setCodigoRetiro(UUID.randomUUID().toString());
             } else {
                 r.setCodigoRetiro(codigoRetiro);
             }
-
-            // 4. Persistir el retiro
             retiroService.registrarRetiro(r);
-            
-            // 5. Mostrar mensaje de éxito
-            context.addMessage(null, 
-                new FacesMessage(FacesMessage.SEVERITY_INFO, 
-                "Éxito", "Retiro registrado correctamente."));
-            
-            // 6. Limpiar formulario
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Éxito", "Retiro registrado correctamente."));
             limpiarFormulario();
-            
             return null;
         } catch (Exception e) {
-            // 7. Manejo de errores
-            context.addMessage(null, 
-                new FacesMessage(FacesMessage.SEVERITY_ERROR, 
-                "Error", "No se pudo registrar el retiro: " + e.getMessage()));
-            throw new IllegalStateException("Error al registrar retiro", e);
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "No se pudo registrar el retiro: " + e.getMessage()));
+            return null;
         }
     }
 
     /**
-     * Obtiene el historial de retiros del usuario autenticado.
+     * Obtiene la lista de retiros sin tarjeta realizados por el usuario autenticado.
      * 
-     * @return List<RetiroSinTarjeta> lista de retiros del usuario o lista vacía si no hay usuario
+     * @return lista de retiros; lista vacía si no hay usuario autenticado.
      */
     public List<RetiroSinTarjeta> getRetiros() {
         String ci = authenticationBean.getUsername();
@@ -112,7 +106,7 @@ public class RetiroSinTarjetaBean implements Serializable {
     }
 
     /**
-     * Limpia los campos del formulario.
+     * Limpia los campos del formulario después de registrar un retiro exitoso.
      */
     private void limpiarFormulario() {
         ci = null;
@@ -120,47 +114,28 @@ public class RetiroSinTarjetaBean implements Serializable {
         codigoRetiro = null;
     }
 
-    // ==================== GETTERS Y SETTERS ==================== //
-
-    /**
-     * @return String cédula de identidad asociada al retiro
-     */
-    public String getCi() { 
-        return ci; 
-    }
-    
-    /**
-     * @param ci String cédula de identidad a establecer
-     */
-    public void setCi(String ci) { 
-        this.ci = ci; 
+    // Getters y Setters
+    public String getCi() {
+        return ci;
     }
 
-    /**
-     * @return BigDecimal monto del retiro
-     */
-    public BigDecimal getMonto() { 
-        return monto; 
-    }
-    
-    /**
-     * @param monto BigDecimal cantidad a retirar
-     */
-    public void setMonto(BigDecimal monto) { 
-        this.monto = monto; 
+    public void setCi(String ci) {
+        this.ci = ci;
     }
 
-    /**
-     * @return String código de retiro generado/proporcionado
-     */
-    public String getCodigoRetiro() { 
-        return codigoRetiro; 
+    public BigDecimal getMonto() {
+        return monto;
     }
-    
-    /**
-     * @param codigoRetiro String código de retiro a establecer
-     */
-    public void setCodigoRetiro(String codigoRetiro) { 
-        this.codigoRetiro = codigoRetiro; 
+
+    public void setMonto(BigDecimal monto) {
+        this.monto = monto;
+    }
+
+    public String getCodigoRetiro() {
+        return codigoRetiro;
+    }
+
+    public void setCodigoRetiro(String codigoRetiro) {
+        this.codigoRetiro = codigoRetiro;
     }
 }
