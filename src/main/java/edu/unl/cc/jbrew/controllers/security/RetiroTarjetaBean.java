@@ -1,3 +1,9 @@
+/**
+  Created by IntelliJ IDEA.
+  User: Joseph Aguilar
+  Date: 25/7/25
+  Time: 15:50
+*/
 package edu.unl.cc.jbrew.controllers.security;
 
 import jakarta.enterprise.context.SessionScoped;
