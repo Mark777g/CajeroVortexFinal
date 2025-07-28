@@ -8,75 +8,50 @@ import jakarta.persistence.TypedQuery;
 import java.util.List;
 
 /**
- * Servicio EJB para operaciones relacionadas con depósitos.
- * 
- * <p><strong>Responsabilidades:</strong></p>
- * <ul>
- *   <li>Registro de nuevos depósitos</li>
- *   <li>Consulta de historial de depósitos</li>
- *   <li>Gestión de estados de depósitos</li>
- * </ul>
- * 
- * <p><strong>Alcance:</strong> Stateless (sin estado mantenido entre llamadas)</p>
+ * Servicio encargado de la gestión de operaciones relacionadas con la entidad {@link Deposito}.
+ * Utiliza EJB de tipo Stateless para operaciones transaccionales con JPA.
  */
 @Stateless
 public class DepositoService {
 
+    /**
+     * EntityManager inyectado mediante la unidad de persistencia configurada.
+     * Se utiliza para realizar operaciones sobre la base de datos.
+     */
     @PersistenceContext
-    private EntityManager em;  // Inyecta el EntityManager para operaciones JPA
+    private EntityManager em;
 
     /**
-     * Registra un nuevo depósito en el sistema.
-     * 
-     * @param deposito Entidad Deposito a persistir
-     * @throws IllegalArgumentException si el depósito es nulo
+     * Registra un nuevo depósito en la base de datos.
+     *
+     * @param deposito el objeto {@link Deposito} que se desea persistir.
      */
     public void registrarDeposito(Deposito deposito) {
-        if (deposito == null) {
-            throw new IllegalArgumentException("El depósito no puede ser nulo");
-        }
         em.persist(deposito);
     }
 
     /**
-     * Obtiene todos los depósitos ordenados por fecha descendente.
-     * 
-     * @return List<Deposito> lista de depósitos ordenados
+     * Obtiene la lista de depósitos ordenados por fecha de forma descendente.
+     *
+     * @return una lista de objetos {@link Deposito}, ordenada desde el más reciente al más antiguo.
      */
     public List<Deposito> listarDepositos() {
         TypedQuery<Deposito> query = em.createQuery(
-            "SELECT d FROM Deposito d ORDER BY d.fecha DESC", 
-            Deposito.class);
+                "SELECT d FROM Deposito d ORDER BY d.fecha DESC", Deposito.class);
         return query.getResultList();
     }
 
     /**
-     * Actualiza el estado de un depósito a "ACTIVO".
-     * 
-     * @param id Identificador del depósito a actualizar
-     * @return boolean true si la actualización fue exitosa, false si no se encontró el depósito
+     * Actualiza el estado de un depósito a "ACTIVO" dado su identificador.
+     * Si el depósito no existe, no realiza ninguna acción.
+     *
+     * @param id el identificador único del depósito.
      */
-    public boolean actualizarEstadoADepositoActivo(Long id) {
+    public void actualizarEstadoADepositoActivo(Long id) {
         Deposito deposito = em.find(Deposito.class, id);
         if (deposito != null) {
             deposito.setEstado("ACTIVO");
             em.merge(deposito);
-            return true;
         }
-        return false;
-    }
-
-    /**
-     * Obtiene los depósitos de un usuario específico.
-     * 
-     * @param ci Cédula de identidad del usuario
-     * @return List<Deposito> lista de depósitos del usuario ordenados por fecha
-     */
-    public List<Deposito> listarDepositosPorUsuario(String ci) {
-        TypedQuery<Deposito> query = em.createQuery(
-            "SELECT d FROM Deposito d WHERE d.ci = :ci ORDER BY d.fecha DESC", 
-            Deposito.class);
-        query.setParameter("ci", ci);
-        return query.getResultList();
     }
 }
